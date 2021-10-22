@@ -60,6 +60,11 @@ def mocked_newname():
     with patch('app.services.p2sr.get_display_name', return_value='verycoolupdatedname'):
         yield
 
+@pytest.fixture()
+def mocked_player_does_not_exist():
+    with patch('app.services.p2sr.get_display_name', return_value=None):
+        yield
+
 
 @pytest.fixture()
 def force_update_condition():
