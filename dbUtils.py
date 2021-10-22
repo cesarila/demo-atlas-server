@@ -27,5 +27,5 @@ def pg_utcnow(element, compiler, **kw):
 
 def get_psql_version():
     versionResult = subprocess.run(['psql', '--version'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    version = re.search('^psql \(PostgreSQL\) (\d+\.\d+).*$', versionResult).group(1)
+    version = re.search('^psql \\(PostgreSQL\\) (\\d+\\.\\d+).*$', versionResult).group(1)
     return version
