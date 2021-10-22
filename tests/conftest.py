@@ -46,10 +46,13 @@ def _db(app):
     db.create_all()
     return db
 
+# This invocation is inspired by: https://stackoverflow.com/a/59045506
+#TODO: Refactor to make this opt-out as in: https://stackoverflow.com/a/38763328
 @pytest.fixture()
 def mocked_newname():
     with patch('app.services.p2sr.get_display_name', return_value='verycoolupdatedname'):
         yield
+
 
 @pytest.fixture()
 def force_update_condition():
