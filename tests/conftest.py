@@ -1,10 +1,8 @@
 import os
 import pytest
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from pytest_postgresql.janitor import DatabaseJanitor
 from pytest_postgresql.config import get_config
-from dbUtils import metadata, get_psql_version
+from dbUtils import get_psql_version
 from unittest.mock import patch
 from app import create_app, db
 from app.models import Player
@@ -57,7 +55,6 @@ def mocked_newname():
 def force_update_condition():
     with patch('app.services.time.utc_now', return_value=datetime.utcnow()+MINIMUM_TIME_BEFORE_UPDATE*2):
         yield
-
 
     
 def generate_test_player(db_session=None, steam_id=38903245, display_name='testerman'):
