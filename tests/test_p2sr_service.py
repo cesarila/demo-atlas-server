@@ -1,3 +1,4 @@
+import pytest
 from app.services import p2sr
 
 def test_fetch_new_display_name():

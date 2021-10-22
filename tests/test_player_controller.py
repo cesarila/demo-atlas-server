@@ -2,6 +2,7 @@ import pytest
 from .conftest import generate_test_player
 from app.models import Player
 from app.controllers import player_controller
+pytestmark = pytest.mark.usefixtures('mocked_newname')
 
 
 def test_create_player(db_session):
@@ -15,13 +16,13 @@ def test_create_player(db_session):
     assert dbPlayer.last_updated is not None
 
 
-def test_update_player(db_session, mocked_newname):
+def test_update_player(db_session):
     testPlayer = generate_test_player(db_session)
     player_controller.update_player(testPlayer.steam_id)
     assert testPlayer.display_name == 'verycoolupdatedname'
 
 
-def test_get_fresh_player_updates_after_threshold(db_session, client, mocked_newname, force_update_condition):
+def test_get_fresh_player_updates_after_threshold(db_session, client, force_update_condition):
     testPlayer = generate_test_player(db_session)
     player_controller.get_fresh_player(testPlayer.steam_id)
 

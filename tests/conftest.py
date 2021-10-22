@@ -33,6 +33,14 @@ def database(request):
     yield
     janitor.drop()
 
+    @request.addfinalizer
+    def drop_database():
+        try:
+            janitor.drop()
+        except:
+            return
+
+
 @pytest.fixture(scope='session')
 def app(database):
     app = create_app('testing')
@@ -46,8 +54,7 @@ def _db(app):
     db.create_all()
     return db
 
-# This invocation is inspired by: https://stackoverflow.com/a/59045506
-#TODO: Refactor to make this opt-out as in: https://stackoverflow.com/a/38763328
+
 @pytest.fixture()
 def mocked_newname():
     with patch('app.services.p2sr.get_display_name', return_value='verycoolupdatedname'):
