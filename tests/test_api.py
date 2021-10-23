@@ -33,3 +33,15 @@ class TestHappyPaths:
         response_json = json.loads(response.data.decode().strip())
         assert original_json != response_json
         assert response_json == testPlayer.to_json()
+
+
+class TestErrorResponses:
+
+    def test_update_player_while_p2sr_down_returns_502(self):
+        pass
+
+    def test_get_invalid_player_returns_400(self):
+        pass
+
+    def test_update_player_after_p2sr_breaking_change_returns_500(self):
+        pass

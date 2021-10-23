@@ -8,6 +8,7 @@ from app import create_app, db
 from app.models import Player
 from datetime import datetime
 from globals import *
+from app.services import p2sr, p2sr_response
 
 pytest_plugins = ['pytest-flask-sqlalchemy']
 
@@ -41,7 +42,7 @@ def database(request):
             return
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session', autouse=True)
 def app(database):
     app = create_app('testing')
     app_context = app.app_context()
@@ -57,12 +58,25 @@ def _db(app):
 
 @pytest.fixture()
 def mocked_newname():
-    with patch('app.services.p2sr.get_display_name', return_value='verycoolupdatedname'):
+    with patch(
+            'app.services.p2sr.get_display_name',
+            return_value=p2sr_response.success('verycoolupdatedname')):
         yield
 
 @pytest.fixture()
 def mocked_player_does_not_exist():
-    with patch('app.services.p2sr.get_display_name', return_value=None):
+    with patch('app.services.p2sr.get_display_name', side_effect=mocked_player_does_not_exist_side_effect):
+        yield
+
+
+@pytest.fixture()
+def mocked_p2sr_down():
+    with patch('app.services.p2sr.get_display_name', return_value=p2sr_response.bad_gateway()):
+        yield
+
+@pytest.fixture()
+def mocked_p2sr_breaking_api_change():
+    with patch('app.services.p2sr.get_display_name', return_value=p2sr_response.internal_server_error()):
         yield
 
 
@@ -78,4 +92,7 @@ def generate_test_player(db_session=None, steam_id=38903245, display_name='teste
         db_session.add(test_player)
         db_session.commit()
     return test_player
+
+def mocked_player_does_not_exist_side_effect(steam_id):
+    return p2sr_response.not_found(steam_id)
 

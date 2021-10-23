@@ -6,13 +6,12 @@ from app.services import p2sr, time
 from globals import *
 
 def get_fresh_player(steam_id=-1):
-    player = get_player(steam_id)
+    player = get_db_player(steam_id)
     if not player:
         display_name = p2sr.get_display_name(steam_id)
         if display_name:
             create_player(steam_id, display_name)
-            player = get_player(steam_id)
-            player = player.query.get()
+            player = get_db_player(steam_id)
         else:
             return None
     time_since_update = time.utc_now() - player.last_updated
@@ -30,5 +29,5 @@ def update_player(steam_id):
     player.display_name = p2sr.get_display_name(steam_id)
     db.session.commit()
 
-def get_player(steam_id):
+def get_db_player(steam_id):
     return Player.query.filter_by(steam_id=steam_id).first()
