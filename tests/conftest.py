@@ -1,5 +1,4 @@
-import os
-import pytest
+import os, pytest
 from pytest_postgresql.janitor import DatabaseJanitor
 from pytest_postgresql.config import get_config
 from dbUtils import get_psql_version
@@ -42,7 +41,7 @@ def database(request):
             return
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def app(database):
     app = create_app('testing')
     app_context = app.app_context()

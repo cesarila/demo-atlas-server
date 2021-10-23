@@ -37,11 +37,17 @@ class TestHappyPaths:
 
 class TestErrorResponses:
 
-    def test_update_player_while_p2sr_down_returns_502(self):
-        pass
+    def test_get_expired_player_while_p2sr_down_returns_502(self, db_session, client, mocked_p2sr_down, force_update_condition):
+        testPlayer = generate_test_player(db_session)
+        response = client.get(url_for('api.get_player_name', steam_id=testPlayer.steam_id))
+        assert response.status_code == 502
 
-    def test_get_invalid_player_returns_400(self):
-        pass
+    def test_get_invalid_player_returns_404(self, db_session, client, mocked_player_does_not_exist):
+        testPlayer = generate_test_player()
+        response = client.get(url_for('api.get_player_name', steam_id=testPlayer.steam_id))
+        assert response.status_code == 404
 
-    def test_update_player_after_p2sr_breaking_change_returns_500(self):
-        pass
+    def test_update_player_after_p2sr_breaking_change_returns_500(self, db_session, client, mocked_p2sr_breaking_api_change, force_update_condition):
+        testPlayer = generate_test_player(db_session)
+        response = client.get(url_for('api.get_player_name', steam_id=testPlayer.steam_id))
+        assert response.status_code == 500
