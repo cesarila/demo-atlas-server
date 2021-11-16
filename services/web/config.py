@@ -1,4 +1,4 @@
-import os
+import os, re
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -38,8 +38,10 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     # Fixing Heroku database URL per https://stackoverflow.com/a/66787229/35345
     env_variable = os.environ.get('DATABASE_URL')
-    if env_variable:
+    if re.match('postgres://', env_variable):
         SQLALCHEMY_DATABASE_URI = env_variable.replace("://", "ql://", 1)
+    else:
+        SQLALCHEMY_DATABASE_URI = env_variable
 
 
 config = {
